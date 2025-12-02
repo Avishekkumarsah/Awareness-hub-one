@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Awareness Hub</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes scrollDown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+
+        @keyframes flipIn {
+            from { transform: rotateY(90deg); opacity: 0; }
+            to { transform: rotateY(0); opacity: 1; }
+        }
+
+        @keyframes orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rotate-slow {
+            animation: rotate 1s linear infinite;
+        }
+
+        .rotate-reverse {
+            animation: rotateReverse 1s linear infinite;
+        }
+
+        .rotate-globe {
+            animation: rotate 1s linear infinite;
+        }
+
+        .pulse-glow {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .float-animation {
+            animation: float 1s ease-in-out infinite;
+        }
+
+        .scroll-animation {
+            animation: scrollDown 1s linear infinite;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .gradient-animate {
+            background-size: 200% auto;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        .wobble-animation {
+            animation: wobble 3s ease-in-out infinite;
+        }
+
+        /* Flip Book */
+        .flip-card {
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipping .flip-card-inner {
+            animation: flipIn 0.6s ease-out;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Scrolling Quotes */
+        .quote-container {
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .quote-scroll {
+            animation: scrollDown 15s linear infinite;
+        }
+
+        .quote-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .quote-card:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+        }
+
+        /* Globe */
+        .globe-container {
+            position: relative;
+            width: 256px;
+            height: 256px;
+            margin: 0 auto;
+        }
+
+        .globe {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #22d3ee 50%, #3b82f6 100%);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            animation: rotate 25s linear infinite;
+        }
+
+        .globe-grid {
+            position: absolute;
+            inset: 0;
+        }
+
+        .globe-line-h {
+            position: absolute;
+            width: 100%;
+            height: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .globe-line-v {
+            position: absolute;
+            height: 100%;
+            width: 0;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            animation: scrollDown 8s linear infinite;
+        }
+
+        .continent {
+            position: absolute;
+            background: rgba(22, 163, 74, 0.5);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* Orbiting Ring */
+        .orbit-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px solid rgba(34, 211, 238, 0.3);
+        }
+
+        .orbit-ring-1 {
+            width: 320px;
+            height: 320px;
+            animation: rotate 20s linear infinite;
+        }
+
+        .orbit-ring-2 {
+            width: 384px;
+            height: 384px;
+            animation: rotateReverse 15s linear infinite;
+        }
+
+        /* Particle */
+        .particle {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* Page Indicators */
+        .page-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .page-indicator:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .page-indicator.active {
+            width: 32px;
+            background: #22d3ee;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quote-container {
+                height: 400px;
+            }
+            
+            .globe-container {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-950 via-indigo-900 to-purple-900 text-white">
+    
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+
+            <div class="flex items-center gap-3">
+                <i data-lucide="globe-2" class="w-10 h-10 text-cyan-400"></i>
+                <h1 class="text-xl font-bold">GLOBAL AWARENESS HUB</h1>
+            </div>
+
+            <nav class="flex items-center gap-4">
+                <button onclick="scrollToAbout()"
+                    class="px-5 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-full font-semibold transition-all">
+                    About
+                </button>
+
+                <button onclick="window.location.href='homepage.html'"
+                    class="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all">
+                    User Login
+                </button>
+
+                <button onclick="window.location.href='admmin.html'"
+                    class="px-5 py-2 bg-purple-600 hover:bg-purple-700 rounded-full font-semibold transition-all">
+                    Admin Login
+                </button>
+            </nav>
+        </div>
+    </header>
+
+      <!-- Main Content -->
+    <main class="pt-24 pb-12">
+        <div class="container mx-auto px-4">
+            <!-- Hero Section -->
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-5xl md:text-7xl mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent gradient-animate font-bold">
+                    Welcome to Global Awareness
+                </h2>
+                <p class="text-xl text-cyan-200">
+                    Empowering Communities Through Knowledge and Action
+                </p>
+            </div>
+
+            <!-- Main Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20">
+                <!-- Left Scrolling Quotes -->
+                <div class="lg:col-span-2 hidden lg:block">
+                    <div class="quote-container">
+                        <div class="quote-scroll">
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Be the change you wish to see in the world - Gandhi</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Education is the most powerful weapon to change the world - Mandela</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">The future belongs to those who believe in their dreams - Roosevelt</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Together we can make a difference</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Knowledge is power, spread awareness</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Every action counts towards a better tomorrow</p>
+                            </div>
+                            <!-- Duplicate for continuous scroll -->
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Be the change you wish to see in the world - Gandhi</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Education is the most powerful weapon to change the world - Mandela</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Content -->
+                <div class="lg:col-span-8 space-y-12">
+                    <!-- FlipBook Section -->
+                    <div class="text-center">
+                        <div class="wobble-animation inline-block mb-4">
+                            <i data-lucide="book-open" class="w-12 h-12 text-cyan-400 mx-auto mb-2"></i>
+                        </div>
+                        <h3 class="text-2xl mb-2 font-bold">Global Awareness Topics</h3>
+                        <p class="text-cyan-200 text-sm mb-6">
+                            Page <span id="current-page">1</span> of <span id="total-pages">12</span>
+                        </p>
+
+                        <!-- Flip Book -->
+                        <div class="relative w-full max-w-2xl mx-auto h-[400px]">
+                            <div id="flipbook" class="flip-card absolute inset-0">
+                                <div class="flip-card-inner w-full h-full">
+                                    <div id="page-content" class="w-full h-full bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl shadow-2xl p-8 flex flex-col justify-center items-center border-4 border-white/20 relative">
+                                        <div class="text-center">
+                                            <h2 class="text-4xl mb-6 font-bold" id="page-title">Climate Action</h2>
+                                            <p class="text-lg leading-relaxed" id="page-text">Understanding climate change and our role in creating a sustainable future for generations to come.</p>
+                                        </div>
+                                        <div class="absolute bottom-0 right-0 w-16 h-16 bg-white/10 transform rotate-45 translate-x-8 translate-y-8"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <button onclick="prevPage()" id="prev-btn" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 bg-cyan-500/30 hover:bg-cyan-500/50 disabled:opacity-30 disabled:cursor-not-allowed p-3 rounded-full border border-cyan-400/50 transition-all">
+                                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                            </button>
+
+                            <button onclick="nextPage()" id="next-btn" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 bg-cyan-500/30 hover:bg-cyan-500/50 disabled:opacity-30 disabled:cursor-not-allowed p-3 rounded-full border border-cyan-400/50 transition-all">
+                                <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                        
+ <!-- Page Indicators -->
+                        <div class="flex justify-center gap-2 mt-8" id="page-indicators">
+                            <!-- Generated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Rotating Globe Section -->
+                    <div class="text-center">
+                        <h3 class="text-3xl mb-2 font-bold">Our Global Impact</h3>
+                        <p class="text-cyan-200 mb-8">Connecting communities worldwide</p>
+
+                        <div class="relative w-full max-w-lg mx-auto h-[400px] flex items-center justify-center">
+                            <!-- Orbiting rings -->
+                            <div class="orbit-ring orbit-ring-1"></div>
+                            <div class="orbit-ring orbit-ring-2"></div>
+
+                            <!-- Main Globe -->
+                            <div class="globe-container relative z-10">
+                                <div class="globe">
+                                    <!-- Globe Grid Lines -->
+                                    <div class="globe-grid">
+                                        <div class="globe-line-h" style="top: 0%"></div>
+                                        <div class="globe-line-h" style="top: 25%"></div>
+                                        <div class="globe-line-h" style="top: 50%"></div>
+                                        <div class="globe-line-h" style="top: 75%"></div>
+                                        <div class="globe-line-h" style="top: 100%"></div>
+                                    </div>
+
+                                    <!-- Globe Icon -->
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <i data-lucide="globe" class="w-32 h-32 text-white/80 relative z-10"></i>
+                                    </div>
+
+                                    <!-- Continents -->
+                                    <div class="continent w-20 h-12 top-20 left-16 -rotate-12"></div>
+                                    <div class="continent w-16 h-16 top-24 right-20 rotate-45"></div>
+                                    <div class="continent w-24 h-10 bottom-20 left-20 -rotate-45"></div>
+
+                                    <!-- Glow effect -->
+                                    <div class="absolute inset-0 bg-cyan-400/20 rounded-full blur-xl pulse-glow"></div>
+                                </div>
+                            </div>
+
+                            <!-- Floating particles -->
+                            <div id="globe-particles"></div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-4 mt-12 max-w-3xl mx-auto">
+                            <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 text-center hover:scale-105 transition-transform">
+                                <div class="float-animation">
+                                    <i data-lucide="users" class="w-8 h-8 text-cyan-400 mx-auto mb-2"></i>
+                                </div>
+                                <div class="text-2xl mb-1 font-bold">1M+</div>
+                                <div class="text-sm text-cyan-200">Global Users</div>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 text-center hover:scale-105 transition-transform">
+                                <div class="float-animation" style="animation-delay: 0.3s">
+                                    <i data-lucide="map-pin" class="w-8 h-8 text-cyan-400 mx-auto mb-2"></i>
+                                </div>
+                                <div class="text-2xl mb-1 font-bold">195</div>
+                                <div class="text-sm text-cyan-200">Countries</div>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 text-center hover:scale-105 transition-transform">
+                                <div class="float-animation" style="animation-delay: 0.6s">
+                                    <i data-lucide="zap" class="w-8 h-8 text-cyan-400 mx-auto mb-2"></i>
+                                </div>
+                                <div class="text-2xl mb-1 font-bold">500+</div>
+                                <div class="text-sm text-cyan-200">Daily Updates</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Scrolling Quotes -->
+                <div class="lg:col-span-2 hidden lg:block">
+                    <div class="quote-container">
+                        <div class="quote-scroll">
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Small acts, when multiplied by millions, can transform the world</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Awareness is the first step to change</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Unite for a sustainable future</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Your voice matters in global conversations</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Empower communities through knowledge</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Building bridges across cultures and nations</p>
+                            </div>
+                            <!-- Duplicate for continuous scroll -->
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Small acts, when multiplied by millions, can transform the world</p>
+                            </div>
+                            <div class="quote-card">
+                                <i data-lucide="quote" class="w-6 h-6 text-cyan-400 mb-2"></i>
+                                <p class="text-sm text-cyan-100">Awareness is the first step to change</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+   
+        <!-- About Section -->
+        <section id="about-section" class="py-20 bg-black/20 backdrop-blur-sm mt-20" style="display: none;">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <div class="inline-block mb-4 pulse-glow">
+                        <i data-lucide="globe-2" class="w-16 h-16 text-cyan-400 mx-auto"></i>
+                    </div>
+                    <h2 class="text-5xl mb-6 font-bold">About Global Awareness Hub</h2>
+                    <p class="text-xl text-cyan-200 max-w-3xl mx-auto leading-relaxed">
+                        We are a global platform dedicated to raising awareness about critical issues 
+                        affecting our world. Through education, collaboration, and action, we empower 
+                        individuals and communities to make a positive impact.
+                    </p>
+                </div>
+
+                <!-- Mission Statement -->
+                <div class="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 backdrop-blur-sm rounded-2xl p-12 mb-16 border border-cyan-400/20">
+                    <h3 class="text-3xl mb-6 text-center font-bold">Our Mission</h3>
+                    <p class="text-lg text-cyan-100 leading-relaxed text-center max-w-4xl mx-auto">
+                        To create a world where every individual has access to the knowledge and resources 
+                        needed to understand and address global challenges. We believe that awareness is the 
+                        first step toward meaningful change, and by connecting minds across borders, we can 
+                        build a more sustainable, equitable, and peaceful future for all.
+                    </p>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 hover:border-cyan-400/50 transition-all hover:scale-105">
+                        <div class="wobble-animation">
+                            <i data-lucide="globe-2" class="w-12 h-12 text-cyan-400 mb-4"></i>
+                        </div>
+                        <h4 class="text-xl mb-2 font-bold">Global Reach</h4>
+                        <p class="text-cyan-200">Connecting people from 195 countries across all continents</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 hover:border-cyan-400/50 transition-all hover:scale-105">
+                        <div class="wobble-animation" style="animation-delay: 0.5s">
+                            <i data-lucide="heart" class="w-12 h-12 text-cyan-400 mb-4"></i>
+                        </div>
+                        <h4 class="text-xl mb-2 font-bold">Community Driven</h4>
+                        <p class="text-cyan-200">Built by the community, for the community</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 hover:border-cyan-400/50 transition-all hover:scale-105">
+                        <div class="wobble-animation" style="animation-delay: 1s">
+                            <i data-lucide="lightbulb" class="w-12 h-12 text-cyan-400 mb-4"></i>
+                        </div>
+                        <h4 class="text-xl mb-2 font-bold">Knowledge Sharing</h4>
+                        <p class="text-cyan-200">Empowering through education and awareness</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 hover:border-cyan-400/50 transition-all hover:scale-105">
+                        <div class="wobble-animation" style="animation-delay: 1.5s">
+                            <i data-lucide="users" class="w-12 h-12 text-cyan-400 mb-4"></i>
+                        </div>
+                        <h4 class="text-xl mb-2 font-bold">Collaborative</h4>
+                        <p class="text-cyan-200">Working together to create lasting change</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 hover:border-cyan-400/50 transition-all hover:scale-105">
+                        <div class="wobble-animation" style="animation-delay: 2s">
+                            <i data-lucide="target" class="w-12 h-12 text-cyan-400 mb-4"></i>
+                        </div>
+                        <h4 class="text-xl mb-2 font-bold">Goal Oriented</h4>
+                        <p class="text-cyan-200">Focused on achievable, measurable impact</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-cyan-400/20 hover:border-cyan-400/50 transition-all hover:scale-105">
+                        <div class="wobble-animation" style="animation-delay: 2.5s">
+                            <i data-lucide="sparkles" class="w-12 h-12 text-cyan-400 mb-4"></i>
+                        </div>
+                        <h4 class="text-xl mb-2 font-bold">Innovation</h4>
+                        <p class="text-cyan-200">Leveraging technology for social good</p>
+                    </div>
+                </div>
+
+                <!-- Vision Statement -->
+                <div class="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-2xl p-12 border border-purple-400/20">
+                    <h3 class="text-3xl mb-6 text-center font-bold">Our Vision</h3>
+                    <p class="text-lg text-purple-100 leading-relaxed text-center max-w-4xl mx-auto mb-8">
+                        We envision a world where global awareness translates into local action. Where every 
+                        person, regardless of their location or background, can contribute to solving the 
+                        challenges facing humanity. Through technology, education, and collaboration, we're 
+                        building bridges between communities and creating a network of informed, engaged 
+                        global citizens.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-3 gap-8 mt-12">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2 font-bold">1M+</div>
+                            <div class="text-cyan-200">Active Members</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-2 font-bold">195</div>
+                            <div class="text-cyan-200">Countries Reached</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-2 font-bold">500+</div>
+                            <div class="text-cyan-200">Daily Updates</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call to Action -->
+                <div class="text-center mt-16">
+                    <h3 class="text-3xl mb-4 font-bold">Join Our Movement</h3>
+                    <p class="text-cyan-200 mb-8 text-lg">
+                        Together, we can create awareness and drive change
+                    </p>
+                    <button class="bg-gradient-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-full text-lg transition-all hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105">
+                        Get Involved Today
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black/30 backdrop-blur-md border-t border-white/10 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-cyan-200">
+                © 2024 Global Awareness Hub. Connecting minds, changing lives.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- User Login Modal -->
+    <div id="user-login" class="modal">
+        <div class="modal-content border border-cyan-400/50">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl flex items-center gap-2 font-bold">
+                    <i data-lucide="user" class="w-6 h-6 text-cyan-400"></i>
+                    User Login
+                </h2>
+                <button onclick="closeModal('user-login')" class="text-white hover:text-cyan-400">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <p class="text-cyan-200 mb-6">Enter your credentials to access your account</p>
+            <form class="space-y-4">
+                <div>
+                    <label class="text-sm text-cyan-200 mb-2 block">Email</label>
+                    <input type="email" placeholder="your.email@example.com" class="w-full px-4 py-2 bg-white/5 border border-cyan-400/30 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-sm text-cyan-200 mb-2 block">Password</label>
+                    <input type="password" placeholder="••••••••" class="w-full px-4 py-2 bg-white/5 border border-cyan-400/30 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 px-6 py-3 rounded-lg transition-all">
+                    Login
+                </button>
+                <p class="text-center text-sm text-cyan-200">
+                    Don't have an account? <span class="text-cyan-400 cursor-pointer hover:underline">Sign up</span>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-login" class="modal">
+        <div class="modal-content border border-purple-400/50">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl flex items-center gap-2 font-bold">
+                    <i data-lucide="shield" class="w-6 h-6 text-purple-400"></i>
+                    Admin Login
+                </h2>
+                <button onclick="closeModal('admmin.html')" class="text-white hover:text-purple-400">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <p class="text-purple-200 mb-6">Administrative access - authorized personnel only</p>
+            <form class="space-y-4">
+                <div>
+                    <label class="text-sm text-purple-200 mb-2 block">Admin ID</label>
+                    <input type="text" placeholder="admin-id" class="w-full px-4 py-2 bg-white/5 border border-purple-400/30 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-sm text-purple-200 mb-2 block">Password</label>
+                    <input type="password" placeholder="••••••••" class="w-full px-4 py-2 bg-white/5 border border-purple-400/30 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-sm text-purple-200 mb-2 block">2FA Code</label>
+                    <input type="text" placeholder="000000" class="w-full px-4 py-2 bg-white/5 border border-purple-400/30 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-6 py-3 rounded-lg transition-all">
+                    Login as Admin
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback" class="modal">
+        <div class="modal-content border border-green-400/50">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl flex items-center gap-2 font-bold">
+                    <i data-lucide="message-square" class="w-6 h-6 text-green-400"></i>
+                    Send Feedback
+                </h2>
+                <button onclick="closeModal('feedback')" class="text-white hover:text-green-400">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <p class="text-green-200 mb-6">We value your input. Share your thoughts with us!</p>
+            <form class="space-y-4">
+                <div>
+                    <label class="text-sm text-green-200 mb-2 block">Name</label>
+                    <input type="text" placeholder="Your name" class="w-full px-4 py-2 bg-white/5 border border-green-400/30 rounded-lg text-white placeholder-gray-400 focus:border-green-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-sm text-green-200 mb-2 block">Email</label>
+                    <input type="email" placeholder="your.email@example.com" class="w-full px-4 py-2 bg-white/5 border border-green-400/30 rounded-lg text-white placeholder-gray-400 focus:border-green-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-sm text-green-200 mb-2 block">Message</label>
+                    <textarea placeholder="Share your feedback, suggestions, or report issues..." rows="5" class="w-full px-4 py-2 bg-white/5 border border-green-400/30 rounded-lg text-white placeholder-gray-400 focus:border-green-400 focus:outline-none resize-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 px-6 py-3 rounded-lg transition-all">
+                    Submit Feedback
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // FlipBook Data
+        const pages = [
+            {
+                title: "Climate Action",
+                content: "Understanding climate change and our role in creating a sustainable future for generations to come.",
+                color: "from-green-600 to-emerald-700"
+            },
+            {
+                title: "Global Education",
+                content: "Empowering minds through accessible education and knowledge sharing across all communities.",
+                color: "from-blue-600 to-cyan-700"
+            },
+            {
+                title: "Health & Wellness",
+                content: "Promoting global health initiatives and awareness for mental and physical well-being.",
+                color: "from-purple-600 to-pink-700"
+            },
+            {
+                title: "Human Rights",
+                content: "Advocating for equality, justice, and dignity for all people around the world.",
+                color: "from-red-600 to-orange-700"
+            },
+            {
+                title: "Technology for Good",
+                content: "Leveraging innovation and technology to solve global challenges and connect communities.",
+                color: "from-indigo-600 to-blue-700"
+            },
+            {
+                title: "Cultural Diversity",
+                content: "Celebrating and preserving the rich tapestry of cultures that make our world unique.",
+                color: "from-yellow-600 to-amber-700"
+            },
+            {
+                title: "Economic Development",
+                content: "Building sustainable economies that provide opportunities for all global citizens.",
+                color: "from-teal-600 to-green-700"
+            },
+            {
+                title: "Peace & Security",
+                content: "Working towards a world free from conflict through dialogue and understanding.",
+                color: "from-blue-700 to-indigo-800"
+            },
+            {
+                title: "Environmental Protection",
+                content: "Preserving our planet's biodiversity and natural resources for future generations.",
+                color: "from-green-700 to-teal-700"
+            },
+            {
+                title: "Gender Equality",
+                content: "Promoting equal rights and opportunities for people of all genders worldwide.",
+                color: "from-pink-600 to-rose-700"
+            },
+            {
+                title: "Innovation & Research",
+                content: "Advancing scientific discovery and innovation to address global challenges.",
+                color: "from-violet-600 to-purple-700"
+            },
+            {
+                title: "Community Building",
+                content: "Strengthening local and global communities through collaboration and shared values.",
+                color: "from-orange-600 to-red-700"
+            }
+        ];
+
+        let currentPage = 0;
+
+        // Initialize page indicators
+        function initPageIndicators() {
+            const container = document.getElementById('page-indicators');
+            container.innerHTML = '';
+            pages.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = `page-indicator ${index === 0 ? 'active' : ''}`;
+                indicator.onclick = () => goToPage(index);
+                container.appendChild(indicator);
+            });
+        }
+
+        // Update page
+        function updatePage() {
+            const pageContent = document.getElementById('page-content');
+            const pageTitle = document.getElementById('page-title');
+            const pageText = document.getElementById('page-text');
+            const currentPageSpan = document.getElementById('current-page');
+            const flipbook = document.getElementById('flipbook');
+            
+            // Add flip animation
+            flipbook.classList.add('flipping');
+            
+            setTimeout(() => {
+                pageTitle.textContent = pages[currentPage].title;
+                pageText.textContent = pages[currentPage].content;
+                pageContent.className = `w-full h-full bg-gradient-to-br ${pages[currentPage].color} rounded-2xl shadow-2xl p-8 flex flex-col justify-center items-center border-4 border-white/20 relative`;
+                currentPageSpan.textContent = currentPage + 1;
+                
+                // Update indicators
+                document.querySelectorAll('.page-indicator').forEach((indicator, index) => {
+                    indicator.className = `page-indicator ${index === currentPage ? 'active' : ''}`;
+                });
+                
+                // Update button states
+                document.getElementById('prev-btn').disabled = currentPage === 0;
+                document.getElementById('next-btn').disabled = currentPage === pages.length - 1;
+                
+                flipbook.classList.remove('flipping');
+            }, 300);
+        }
+
+        function nextPage() {
+            if (currentPage < pages.length - 1) {
+                currentPage++;
+                updatePage();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePage();
+            }
+        }
+
+        function goToPage(index) {
+            currentPage = index;
+            updatePage();
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            
+            lucide.createIcons();
+        }
+
+        // Scroll to about
+        function scrollToAbout() {
+            const aboutSection = document.getElementById('about-section');
+            aboutSection.style.display = 'block';
+            setTimeout(() => {
+                aboutSection.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            lucide.createIcons();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Create floating particles around globe
+        function createGlobeParticles() {
+            const container = document.getElementById('globe-particles');
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'w-3 h-3 bg-cyan-400 rounded-full absolute';
+                particle.style.cssText = `
+                    animation: orbit ${10 + i * 2}s linear infinite;
+                    animation-delay: ${i * 0.3}s;
+                    top: 50%;
+                    left: 50%;
+                    margin-left: ${180 * Math.cos((i * 45 * Math.PI) / 180)}px;
+                    margin-top: ${180 * Math.sin((i * 45 * Math.PI) / 180)}px;
+                `;
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initPageIndicators();
+            createGlobeParticles();
+            document.getElementById('total-pages').textContent = pages.length;
+            
+            // Reinitialize icons after content loads
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        });
+
+        // Prevent form submissions (for demo)
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Form submitted! (Demo mode)');
+            });
+        });
+    </script>
+</body>
+</html>

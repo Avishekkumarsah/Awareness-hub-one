@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Global Awareness Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* ==================== QUOTES SCROLL ==================== */
+    @keyframes scrollDown {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    .quotes-scroller {
+      animation: scrollDown 25s linear infinite;
+    }
+
+    /* ==================== FLIPBOOK ANIMATION ==================== */
+    @keyframes flipPage {
+      0% { transform: rotateY(0deg); opacity: 1; }
+      50% { transform: rotateY(90deg); opacity: 0; }
+      100% { transform: rotateY(0deg); opacity: 1; }
+    }
+    .animate-flip-page {
+      animation: flipPage 0.6s ease-in-out;
+    }
+
+    /* ==================== REALISTIC ROTATING GLOBE ==================== */
+    @keyframes spinGlobe {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    .globe-3d {
+      animation: spinGlobe 12s linear infinite;
+      transform-style: preserve-3d;
+    }
+
+    /* Orbit Rings */
+    @keyframes orbitSpin {
+      0% { transform: rotate(0deg); } 
+      100% { transform: rotate(360deg); }
+    }
+    .orbit-ring {
+      animation: orbitSpin 18s linear infinite;
+    }
+    .orbit-ring-2 {
+      animation: orbitSpin 28s linear infinite reverse;
+    }
+
+    /* Globe Glow Pulse */
+    @keyframes pulseGlow {
+      0% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.1); }
+      100% { opacity: 0.3; transform: scale(1); }
+    }
+    .glow-pulse {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    /* Floating Continents */
+    @keyframes drift {
+      0% { transform: translateX(0px) translateY(0px); }
+      50% { transform: translateX(8px) translateY(6px); }
+      100% { transform: translateX(0px) translateY(0px); }
+    }
+    .continent {
+      animation: drift 6s ease-in-out infinite alternate;
+    }
+
+    /* Logo glow pulse */
+    @keyframes pulseSlow {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.3); opacity: 0; }
+    }
+    .animate-pulse-slow {
+      animation: pulseSlow 3s ease-out infinite;
+    }
+
+    .backdrop { backdrop-filter: blur(12px); }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-950 via-indigo-900 to-purple-900 text-white overflow-x-hidden">
+
+<!-- ==================== HEADER ==================== -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-md border-b border-white/10">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    
+    <!-- LOGO -->
+    <div class="flex items-center gap-3">
+      <div class="relative w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg">
+        🌍
+        <div class="absolute inset-0 rounded-full border border-white/40 animate-pulse-slow"></div>
+      </div>
+      <div>
+        <h1 class="text-2xl font-semibold">GLOBAL AWARENESS HUB</h1>
+        <p class="text-xs text-cyan-300 uppercase">Connecting Minds • Changing Lives</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <button id="aboutButton"
+      class="px-6 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-full border border-cyan-400/60">
+      About
+    </button>
+  </div>
+</header>
+
+<!-- =============================================================== -->
+<!-- ======================= MAIN CONTENT ========================== -->
+<!-- =============================================================== -->
+<main class="pt-24 pb-16">
+  <section class="max-w-6xl mx-auto px-4">
+
+    <!-- HERO SECTION -->
+    <div class="text-center mb-16">
+      <h2 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">
+        Welcome to Global Awareness
+      </h2>
+      <p class="text-xl text-cyan-200 mt-3">
+        Empowering communities through knowledge and collaboration.
+      </p>
+    </div>
+
+    <!-- ==================== GRID SECTION ==================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT QUOTES -->
+      <div class="hidden lg:block lg:col-span-2">
+        <div class="relative h-[520px] overflow-hidden">
+          <div class="quotes-scroller space-y-4">
+
+            <!-- Left Quotes Loop -->
+            <template id="leftQuotes">
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                “Be the change you wish to see in the world.” – Gandhi
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                “Education is the most powerful weapon.” – Mandela
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                “The future belongs to those who dream.” – Roosevelt
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Together we can make a difference.
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Knowledge is power — spread awareness.
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Every action counts towards a better tomorrow.
+              </div>
+            </template>
+
+            <script>
+              const leftQuotesContainer = document.currentScript.parentElement;
+              const leftTemp = document.getElementById("leftQuotes").innerHTML;
+              leftQuotesContainer.innerHTML += leftTemp + leftTemp; 
+            </script>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== CENTER CONTENT ==================== -->
+      <div class="lg:col-span-8 space-y-10">
+
+        <!-- ========== FLIPBOOK ========== -->
+        <div class="bg-white/5 border border-white/20 rounded-2xl p-6 shadow-2xl">
+
+          <div class="text-center mb-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 mx-auto flex items-center justify-center text-2xl">📖</div>
+            <h3 class="text-3xl mt-2">Global Awareness Topics</h3>
+            <p id="pageIndicator" class="text-sm text-cyan-300">Page 1 of 12</p>
+          </div>
+
+          <div class="relative h-[260px] flex items-center justify-center">
+            <div id="flipCard" class="w-full h-full bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-xl">
+              <h4 id="pageTitle" class="text-3xl mb-3">Climate Action</h4>
+              <p id="pageContent" class="text-lg text-cyan-100">
+                Understanding climate change and sustainable future solutions.
+              </p>
+            </div>
+
+            <!-- Flip Navigation -->
+            <button id="prevPage"
+              class="absolute left-0 -translate-x-12 top-1/2 bg-cyan-500/30 hover:bg-cyan-500/50 rounded-full w-10 h-10">
+              ‹
+            </button>
+
+            <button id="nextPage"
+              class="absolute right-0 translate-x-12 top-1/2 bg-cyan-500/30 hover:bg-cyan-500/50 rounded-full w-10 h-10">
+              ›
+            </button>
+          </div>
+
+          <div id="pageDots" class="flex justify-center gap-2 mt-4"></div>
+        </div>
+
+        <!-- ==================== REALISTIC ROTATING GLOBE ==================== -->
+        <div class="bg-white/5 border border-purple-300/30 rounded-2xl p-6 shadow-2xl">
+
+          <h3 class="text-3xl text-center mb-3">Our Global Impact</h3>
+          <p class="text-center text-cyan-300">Connecting communities worldwide</p>
+
+          <div class="flex flex-col items-center mt-6">
+
+            <!-- ENTIRE GLOBE SYSTEM -->
+            <div class="relative w-72 h-72 flex items-center justify-center">
+
+              <!-- Outer Orbit Ring -->
+              <div class="absolute w-80 h-80 rounded-full border border-purple-300/20 orbit-ring"></div>
+
+              <!-- Inner Orbit Ring -->
+              <div class="absolute w-64 h-64 rounded-full border border-cyan-300/30 orbit-ring-2"></div>
+
+              <!-- GLOBE ITSELF -->
+              <div class="globe-3d w-48 h-48 rounded-full bg-gradient-to-br from-blue-500 via-cyan-400 to-blue-700 shadow-2xl overflow-hidden relative">
+
+                <!-- GLOW -->
+                <div class="absolute inset-0 rounded-full bg-cyan-400/20 blur-xl glow-pulse"></div>
+
+                <!-- LATITUDE LINES -->
+                <div class="absolute inset-0">
+                  <div class="absolute w-full border-t border-white/25 top-[20%]"></div>
+                  <div class="absolute w-full border-t border-white/25 top-[40%]"></div>
+                  <div class="absolute w-full border-t border-white/25 top-[60%]"></div>
+                  <div class="absolute w-full border-t border-white/25 top-[80%]"></div>
+                </div>
+
+                <!-- LONGITUDE LINES -->
+                <div class="absolute inset-0">
+                  <div class="absolute h-full border-l border-white/25 left-[20%]"></div>
+                  <div class="absolute h-full border-l border-white/25 left-[40%]"></div>
+                  <div class="absolute h-full border-l border-white/25 left-[60%]"></div>
+                  <div class="absolute h-full border-l border-white/25 left-[80%]"></div>
+                </div>
+
+                <!-- Continents Floating -->
+                <div class="continent absolute w-16 h-12 bg-green-500/60 rounded-full top-10 left-8"></div>
+                <div class="continent absolute w-12 h-12 bg-green-500/60 rounded-full top-20 right-8"></div>
+                <div class="continent absolute w-20 h-10 bg-green-500/60 rounded-full bottom-12 left-12"></div>
+
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-4 mt-8">
+              <div class="bg-white/5 rounded-xl p-4 text-center border border-cyan-300/30">
+                <div class="text-2xl">1M+</div>
+                <div class="text-cyan-200">Users</div>
+              </div>
+              <div class="bg-white/5 rounded-xl p-4 text-center border border-cyan-300/30">
+                <div class="text-2xl">195</div>
+                <div class="text-cyan-200">Countries</div>
+              </div>
+              <div class="bg-white/5 rounded-xl p-4 text-center border border-cyan-300/30">
+                <div class="text-2xl">500+</div>
+                <div class="text-cyan-200">Daily Updates</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT QUOTES -->
+      <div class="hidden lg:block lg:col-span-2">
+        <div class="relative h-[520px] overflow-hidden">
+          <div class="quotes-scroller space-y-4">
+
+            <!-- Right Quotes -->
+            <template id="rightQuotes">
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Small acts create huge impact when multiplied.
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Awareness is the first step towards change.
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Unite for a sustainable future.
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Your voice matters globally.
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Empower communities through action.
+              </div>
+              <div class="bg-white/5 border border-cyan-400/30 rounded-lg p-3 text-sm">
+                Culture connects the world.
+              </div>
+            </template>
+
+            <script>
+              const rightQuotesContainer = document.currentScript.parentElement;
+              const rightTemp = document.getElementById("rightQuotes").innerHTML;
+              rightQuotesContainer.innerHTML += rightTemp + rightTemp; 
+            </script>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ====================== FEATURES SECTION ====================== -->
+    <div class="mt-14 text-center">
+      <h3 class="text-3xl mb-3">Get Started</h3>
+      <p class="text-cyan-300 mb-10">Choose your path to engage with our platform</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <!-- USER LOGIN -->
+        <button data-modal-target="userModal"
+          class="bg-white/5 hover:bg-cyan-500/10 border border-white/20 hover:border-cyan-400/50 rounded-2xl p-6">
+          <div class="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-2xl">👤</div>
+          <h4 class="text-xl mt-4">User Login</h4>
+          <p class="text-sm text-cyan-300 mt-2">Access your dashboard and activity tracking.</p>
+        </button>
+
+        <!-- ADMIN LOGIN -->
+        <button data-modal-target="adminModal"
+          class="bg-white/5 hover:bg-purple-500/10 border border-white/20 hover:border-purple-400/50 rounded-2xl p-6">
+          <div class="w-16 h-16 mx-auto bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-2xl">🛡️</div>
+          <h4 class="text-xl mt-4">Admin Login</h4>
+          <p class="text-sm text-cyan-300 mt-2">Manage users, content, and system settings.</p>
+        </button>
+
+        <!-- FEEDBACK -->
+        <button data-modal-target="feedbackModal"
+          class="bg-white/5 hover:bg-green-500/10 border border-white/20 hover:border-green-400/50 rounded-2xl p-6">
+          <div class="w-16 h-16 mx-auto bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-2xl">💬</div>
+          <h4 class="text-xl mt-4">Feedback</h4>
+          <p class="text-sm text-cyan-300 mt-2">Share your experience to improve our platform.</p>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== ABOUT SECTION ====================== -->
+  <section id="aboutSection" class="mt-20 py-16 bg-black/30 border-t border-white/10 backdrop-blur">
+    <div class="max-w-5xl mx-auto px-4">
+
+      <div class="text-center mb-12">
+        <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full mx-auto flex items-center justify-center text-3xl">🌐</div>
+        <h2 class="text-4xl mt-4">About Global Awareness Hub</h2>
+
+        <p class="text-lg text-cyan-200 mt-4 max-w-3xl mx-auto">
+          A global platform empowering individuals through knowledge, collaboration, and action. We raise awareness
+          about the world’s most important issues and help people create meaningful change locally and globally.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-white/5 border border-cyan-300/30 rounded-xl p-6">
+          <h4 class="text-xl mb-2">Global Reach</h4>
+          <p class="text-cyan-200">Users from 195 countries participate in our movement.</p>
+        </div>
+
+        <div class="bg-white/5 border border-cyan-300/30 rounded-xl p-6">
+          <h4 class="text-xl mb-2">Community Driven</h4>
+          <p class="text-cyan-200">Built for the community with shared goals and values.</p>
+        </div>
+
+        <div class="bg-white/5 border border-cyan-300/30 rounded-xl p-6">
+          <h4 class="text-xl mb-2">Innovation</h4>
+          <p class="text-cyan-200">Using technology to accelerate global awareness.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="text-center py-6 bg-black/40 border-t border-white/10 mt-10 text-cyan-300">
+  © 2024 Global Awareness Hub — Inspiring Action Worldwide.
+</footer>
+
+<!-- =============================================================== -->
+<!-- =========================== MODALS ============================ -->
+<!-- =============================================================== -->
+
+<!-- USER MODAL -->
+<div id="userModal"
+  class="fixed inset-0 bg-black/50 backdrop hidden items-center justify-center">
+  <div class="bg-gray-900 border border-cyan-300/40 rounded-2xl p-6 w-full max-w-md">
+
+    <div class="flex justify-between">
+      <h3 class="text-xl flex gap-2"><span>👤</span> User Login</h3>
+      <button data-close-modal class="text-xl">✕</button>
+    </div>
+
+    <form class="mt-4 space-y-4">
+      <input type="email" placeholder="Email"
+        class="w-full p-2 rounded bg-white/5 border border-cyan-300/30" />
+      <input type="password" placeholder="Password"
+        class="w-full p-2 rounded bg-white/5 border border-cyan-300/30" />
+
+      <button class="w-full py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded">
+        Login
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div id="adminModal"
+  class="fixed inset-0 bg-black/50 backdrop hidden items-center justify-center">
+  <div class="bg-gray-900 border border-purple-300/40 rounded-2xl p-6 w-full max-w-md">
+
+    <div class="flex justify-between">
+      <h3 class="text-xl flex gap-2"><span>🛡️</span> Admin Login</h3>
+      <button data-close-modal class="text-xl">✕</button>
+    </div>
+
+    <form class="mt-4 space-y-4">
+      <input type="text" placeholder="Admin ID"
+        class="w-full p-2 rounded bg-white/5 border border-purple-300/30" />
+      <input type="password" placeholder="Password"
+        class="w-full p-2 rounded bg-white/5 border border-purple-300/30" />
+      <input type="text" placeholder="2FA Code"
+        class="w-full p-2 rounded bg-white/5 border border-purple-300/30" />
+
+      <button class="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded">
+        Login as Admin
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div id="feedbackModal"
+  class="fixed inset-0 bg-black/50 backdrop hidden items-center justify-center">
+  <div class="bg-gray-900 border border-green-300/40 rounded-2xl p-6 w-full max-w-md">
+
+    <div class="flex justify-between">
+      <h3 class="text-xl flex gap-2"><span>💬</span> Feedback</h3>
+      <button data-close-modal class="text-xl">✕</button>
+    </div>
+
+    <form class="mt-4 space-y-4">
+      <input type="text" placeholder="Your Name"
+        class="w-full p-2 rounded bg-white/5 border border-green-300/30" />
+
+      <input type="email" placeholder="Your Email"
+        class="w-full p-2 rounded bg-white/5 border border-green-300/30" />
+
+      <textarea placeholder="Your Message"
+        class="w-full p-2 rounded bg-white/5 border border-green-300/30"></textarea>
+
+      <button class="w-full py-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded">
+        Send Feedback
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<!-- =============================================================== -->
+<!-- ======================== JAVASCRIPT =========================== -->
+<!-- =============================================================== -->
+<script>
+
+  /* =================== ABOUT SCROLL =================== */
+  document.getElementById("aboutButton").onclick = () => {
+    document.getElementById("aboutSection")
+      .scrollIntoView({ behavior: "smooth" });
+  };
+
+  /* ==================== FLIPBOOK ==================== */
+
+  const pages = [
+    { title: "Climate Action", content:"Understanding climate change and sustainable future.", color:"from-green-600 to-emerald-700" },
+    { title: "Global Education", content:"Making education accessible worldwide.", color:"from-blue-600 to-cyan-700" },
+    { title: "Health & Wellness", content:"Improving mental and physical well-being globally.", color:"from-purple-600 to-pink-700" },
+    { title: "Human Rights", content:"Promoting equality and justice worldwide.", color:"from-red-600 to-orange-700" },
+    { title: "Technology for Good", content:"Using innovation to solve global problems.", color:"from-indigo-600 to-blue-700" },
+    { title: "Cultural Diversity", content:"Celebrating cultures across the globe.", color:"from-yellow-600 to-amber-700" },
+    { title: "Economic Development", content:"Building sustainable and fair economies.", color:"from-teal-600 to-green-700" },
+    { title: "Peace & Security", content:"Conflicts resolved through understanding.", color:"from-blue-700 to-indigo-800" },
+    { title: "Environmental Protection", content:"Protecting biodiversity & resources.", color:"from-green-700 to-teal-700" },
+    { title: "Gender Equality", content:"Equal rights for all genders.", color:"from-pink-600 to-rose-700" },
+    { title: "Innovation & Research", content:"Advancing science for global good.", color:"from-violet-600 to-purple-700" },
+    { title: "Community Building", content:"Strengthening global unity.", color:"from-orange-600 to-red-700" },
+  ];
+
+  let page = 0;
+
+  const flipCard = document.getElementById("flipCard");
+  const pageTitle = document.getElementById("pageTitle");
+  const pageContent = document.getElementById("pageContent");
+  const pageIndicator = document.getElementById("pageIndicator");
+  const prevPage = document.getElementById("prevPage");
+  const nextPage = document.getElementById("nextPage");
+  const pageDots = document.getElementById("pageDots");
+
+  function renderPage() {
+    const p = pages[page];
+
+    flipCard.className =
+      `w-full h-full rounded-2xl shadow-xl p-6 flex flex-col justify-center text-center bg-gradient-to-br ${p.color}`;
+
+    flipCard.classList.add("animate-flip-page");
+    setTimeout(() => flipCard.classList.remove("animate-flip-page"), 600);
+
+    pageTitle.textContent = p.title;
+    pageContent.textContent = p.content;
+    pageIndicator.textContent = `Page ${page + 1} of ${pages.length}`;
+
+    prevPage.disabled = page === 0;
+    nextPage.disabled = page === pages.length - 1;
+
+    [...pageDots.children].forEach((dot, i) => {
+      dot.className =
+        i === page
+          ? "w-6 h-2 bg-cyan-400 rounded-full"
+          : "w-2 h-2 bg-white/40 rounded-full cursor-pointer hover:bg-white/70";
+    });
+  }
+
+  pages.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.onclick = () => { page = i; renderPage(); };
+    dot.className = i === 0 ? "w-6 h-2 bg-cyan-400 rounded-full" : "w-2 h-2 bg-white/40 rounded-full";
+    pageDots.appendChild(dot);
+  });
+
+  prevPage.onclick = () => { if (page > 0) page--; renderPage(); };
+  nextPage.onclick = () => { if (page < pages.length - 1) page++; renderPage(); };
+  renderPage();
+
+  /* ==================== MODALS ==================== */
+
+  document.querySelectorAll("[data-modal-target]").forEach(btn => {
+    btn.onclick = () => {
+      const modal = document.getElementById(btn.dataset.modalTarget);
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    };
+  });
+
+  document.querySelectorAll("[data-close-modal]").forEach(btn => {
+    btn.onclick = () => btn.closest("[id$='Modal']").classList.add("hidden");
+  });
+
+  document.querySelectorAll("[id$='Modal']").forEach(modal => {
+    modal.onclick = e => { if (e.target === modal) modal.classList.add("hidden"); };
+  });
+
+</script>
+
+</body>
+</html>

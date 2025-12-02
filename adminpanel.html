@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - User Accounts</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            background-attachment: fixed;
+            color: #1a2e35;
+        }
+
+        /* 🌟 Animation wrapper */
+        .panel-hidden {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        .panel-animate {
+            animation: panelFade 0.9s ease-out forwards;
+        }
+
+        @keyframes panelFade {
+            0% { opacity: 0; transform: translateY(25px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+
+<body class="p-6">
+
+<script>
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+        alert("Access denied! Please log in as admin.");
+        window.location.href = "adminlogin.html";
+    }
+</script>
+
+<!-- ✨ Animated container -->
+<div id="adminPanel" class="panel-hidden max-w-6xl mx-auto bg-white p-10 rounded-2xl shadow-2xl border border-gray-200">
+
+    <h1 class="text-4xl font-extrabold text-center text-green-700 mb-6">Admin Panel</h1>
+
+    <p class="text-center text-lg font-semibold text-gray-700 mb-4">
+        Logged in as: <span id="loggedAdmin" class="text-green-700 font-bold"></span>
+    </p>
+
+    <p class="text-center text-lg font-semibold text-gray-700 mb-8">
+        Total Admin Accounts: <span id="totalAdmins" class="text-blue-600 font-bold"></span>
+    </p>
+
+    <!-- ADMIN LIST -->
+    <div class="bg-gray-100 p-4 rounded-xl mb-10 border">
+        <h3 class="text-xl font-bold text-gray-700 mb-2">Admin Accounts:</h3>
+        <ul id="adminList" class="space-y-2"></ul>
+    </div>
+
+    <!-- ADD NEW ADMIN -->
+    <div class="mb-10 bg-gray-100 p-6 rounded-xl border border-gray-300">
+        <h3 class="text-xl font-bold mb-4 text-gray-700">Add New Admin:</h3>
+
+        <input id="newAdminEmail" type="email" placeholder="Enter new admin email"
+            class="border p-3 rounded-lg w-full mb-3">
+
+        <input id="newAdminPassword" type="text" placeholder="Enter new admin password"
+            class="border p-3 rounded-lg w-full mb-3">
+
+        <button id="addAdminBtn"
+            class="bg-yellow-600 text-white px-6 py-3 rounded-full shadow-lg font-bold hover:bg-yellow-700 w-full">
+            Add Admin
+        </button>
+    </div>
+
+    <!-- USERS COUNT -->
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800">Total Users: 
+            <span id="totalUsers" class="text-green-600 font-bold">0</span>
+        </h2>
+    </div>
+
+    <!-- GROWTH CHART -->
+    <div class="bg-gradient-to-br from-green-100 to-white p-6 rounded-xl shadow-2xl border mb-10">
+        <h3 class="text-xl font-bold mb-4 text-gray-700 text-center">📈 Daily User Growth</h3>
+        <canvas id="growthChart" height="140"></canvas>
+    </div>
+
+    <!-- ADD NEW USER -->
+    <div class="mb-10 bg-gray-100 p-6 rounded-xl border border-gray-300">
+        <h3 class="text-xl font-bold mb-4 text-gray-700">Add New User Manually:</h3>
+
+        <input id="newEmail" type="email" placeholder="Enter user email"
+            class="border p-3 rounded-lg w-full mb-3">
+
+        <input id="newPassword" type="text" placeholder="Enter user password"
+            class="border p-3 rounded-lg w-full mb-3">
+
+        <button id="addUserBtn"
+            class="bg-green-600 text-white px-6 py-3 rounded-full shadow-lg font-bold hover:bg-green-700 w-full">
+            Add User
+        </button>
+    </div>
+
+    <!-- USER LIST -->
+    <div>
+        <h3 class="text-xl font-bold text-gray-700 mb-4">Registered Accounts:</h3>
+
+        <table class="min-w-full bg-white border border-gray-300 rounded-xl overflow-hidden">
+            <thead class="bg-green-600 text-white">
+                <tr>
+                    <th class="py-3 px-4 text-left">Email</th>
+                    <th class="py-3 px-4 text-left">Password</th>
+                    <th class="py-3 px-4 text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="mt-10 text-center">
+        <button id="deleteAllBtn"
+            class="bg-red-600 text-white px-6 py-3 rounded-full shadow-lg font-bold hover:bg-red-700">
+            Delete ALL Users
+        </button>
+    </div>
+
+    <div class="mt-8 text-center">
+        <button id="logoutBtn"
+            class="bg-gray-800 text-white px-6 py-2 rounded-xl hover:bg-black">
+            Logout Admin
+        </button>
+    </div>
+
+</div>
+
+<script>
+
+/* 🌟 Trigger animation after page loads */
+window.onload = () => {
+    const panel = document.getElementById("adminPanel");
+    setTimeout(() => {
+        panel.classList.add("panel-animate");
+    }, 100);
+};
+
+/* ------------------------------  
+        ADMIN SYSTEM  
+------------------------------ */
+
+const defaultAdmins = [
+    { email: "24ug1bycs888@bmsit.in", password: "Yogendra@#$123" },
+    { email: "jaulhaq369@gmail.com", password: "itsmejaulhaq09098" },
+    { email: "24ug1bycs901@bmsit.in", password: "mrkhatarnak" }
+];
+
+let extraAdmins = JSON.parse(localStorage.getItem("extraAdmins")) || [];
+let allAdmins = [...defaultAdmins, ...extraAdmins];
+
+document.getElementById("loggedAdmin").textContent =
+    localStorage.getItem("adminLoggedInAs");
+
+function updateAdminList() {
+    const adminList = document.getElementById("adminList");
+    adminList.innerHTML = "";
+
+    allAdmins.forEach((a, index) => {
+        const isDefault = defaultAdmins.some(def => def.email === a.email);
+
+        adminList.innerHTML += `
+            <li class="flex justify-between items-center bg-white p-3 rounded-lg border">
+                <span>${a.email}</span>
+                ${isDefault ? "" : `
+                    <button onclick="deleteAdmin(${index})"
+                        class="bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600">
+                        Delete
+                    </button>`}
+            </li>`;
+    });
+
+    document.getElementById("totalAdmins").textContent = allAdmins.length;
+}
+
+updateAdminList();
+
+function deleteAdmin(index) {
+    extraAdmins.splice(index - defaultAdmins.length, 1);
+    localStorage.setItem("extraAdmins", JSON.stringify(extraAdmins));
+    allAdmins = [...defaultAdmins, ...extraAdmins];
+    updateAdminList();
+}
+
+document.getElementById("addAdminBtn").addEventListener("click", () => {
+    const email = document.getElementById("newAdminEmail").value.trim();
+    const password = document.getElementById("newAdminPassword").value.trim();
+
+    if (email === "" || password === "") return;
+
+    extraAdmins.push({ email, password });
+    localStorage.setItem("extraAdmins", JSON.stringify(extraAdmins));
+
+    allAdmins = [...defaultAdmins, ...extraAdmins];
+    updateAdminList();
+
+    document.getElementById("newAdminEmail").value = "";
+    document.getElementById("newAdminPassword").value = "";
+});
+
+/* ------------------------------  
+  USER SYSTEM + GRAPH SYSTEM  
+------------------------------ */
+
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+// Historical total users count daily
+let userGrowthHistory = JSON.parse(localStorage.getItem("userGrowthHistory")) || {};
+
+function saveUserGrowth() {
+    const today = new Date().toLocaleDateString();
+    userGrowthHistory[today] = users.length;
+    localStorage.setItem("userGrowthHistory", JSON.stringify(userGrowthHistory));
+}
+
+function loadUsers() {
+    const userTableBody = document.getElementById("userTableBody");
+    userTableBody.innerHTML = "";
+    document.getElementById("totalUsers").textContent = users.length;
+
+    users.forEach((user, index) => {
+        userTableBody.innerHTML += `
+            <tr>
+                <td class="py-3 px-4">${user.email}</td>
+                <td class="py-3 px-4">${user.password}</td>
+                <td class="py-3 px-4 text-center">
+                    <button onclick="deleteUser(${index})"
+                        class="bg-red-500 text-white px-4 py-1 rounded-full hover:bg-red-600">
+                        Delete
+                    </button>
+                </td>
+            </tr>`;
+    });
+}
+
+function deleteUser(index) {
+    users.splice(index, 1);
+    localStorage.setItem("users", JSON.stringify(users));
+    saveUserGrowth();
+    renderChart();
+    loadUsers();
+}
+
+document.getElementById("addUserBtn").addEventListener("click", () => {
+    const email = document.getElementById("newEmail").value.trim();
+    const pw = document.getElementById("newPassword").value.trim();
+
+    if (!email || !pw) return;
+
+    users.push({ email, password: pw });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    saveUserGrowth();
+    renderChart();
+    loadUsers();
+
+    document.getElementById("newEmail").value = "";
+    document.getElementById("newPassword").value = "";
+});
+
+/* ------------------------------  
+     BEAUTIFUL TRADING STYLE CHART  
+------------------------------ */
+
+let growthChart;
+
+function renderChart() {
+    const ctx = document.getElementById("growthChart").getContext("2d");
+
+    const labels = Object.keys(userGrowthHistory);
+    const data = Object.values(userGrowthHistory);
+
+    if (growthChart) growthChart.destroy();
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, "rgba(16, 185, 129, 0.6)");
+    gradient.addColorStop(1, "rgba(16, 185, 129, 0)");
+
+    growthChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Total Users",
+                data: data,
+                borderWidth: 4,
+                borderColor: "#16a34a",
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.5,
+                pointRadius: 5,
+                pointBackgroundColor: "#16a34a",
+                pointBorderColor: "white",
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: "#1f2937",
+                    titleColor: "#fff",
+                    bodyColor: "#fff",
+                    padding: 12,
+                    borderColor: "#16a34a",
+                    borderWidth: 1
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.1)" } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+/* ------------------------------  
+             LOGOUT  
+------------------------------ */
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    alert("You are logged out!");
+    localStorage.removeItem("adminLoggedIn");
+    localStorage.removeItem("adminLoggedInAs");
+    window.location.href = "adminlogin.html";
+});
+
+
+// Initial load
+loadUsers();
+saveUserGrowth();
+renderChart();
+
+</script>
+
+</body>
+</html>
